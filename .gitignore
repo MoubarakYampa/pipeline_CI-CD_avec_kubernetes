@@ -1,0 +1,34 @@
+# ------------------------------------
+# 1. Fichiers de Sécurité/Clés Privées
+# Ces fichiers ne doivent JAMAIS être dans Git, car ils contiennent des secrets.
+# ------------------------------------
+*.key
+*.csr
+*.srl
+ca.crt
+server.crt
+
+# Si vous générez des fichiers .pem ou autres clés
+*.pem
+
+# Fichier de credentials Docker (contient souvent des mots de passe)
+docker-credentials.yaml
+
+# ------------------------------------
+# 2. Fichiers binaires et logs potentiels
+# ------------------------------------
+# Fichiers binaires ou exécutables générés
+*.exe
+*.bin
+*.out
+*.log
+
+# ------------------------------------
+# 3. Fichiers spécifiques au développement local (si applicables)
+# ------------------------------------
+# Dossiers/fichiers spécifiques à des IDE courants
+.idea/
+.vscode/
+*~
+# Fichiers de configuration utilisateur temporaires
+.DS_Store
