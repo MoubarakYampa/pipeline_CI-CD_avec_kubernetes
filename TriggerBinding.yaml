@@ -1,0 +1,11 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: mon-app-binding
+spec:
+  params:
+    - name: gitrepositoryurl
+      value: $(body.repository.clone_url)
+    - name: image-reference
+      # Construit une référence d'image unique avec les 7 premiers caractères de l'ID du commit
+      value: moubarakyampa/mon_projet:$(body.head_commit.id | slice 7)

@@ -1,0 +1,15 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: mon-app-listener
+spec:
+  triggers:
+    - name: mon-declencheur-github-main
+      # 👇 On ajoute un filtre (intercepteur) 👇
+      interceptors:
+        - cel:
+            filter: "body.ref == 'refs/heads/main'" # Accepte seulement si la branche est 'main'
+      bindings:
+        - name: mon-app-binding
+      template:
+        name: mon-app-template

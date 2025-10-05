@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: trivy-source-scan
+spec:
+  workspaces:
+    - name: source
+      description: Le répertoire contenant le code source à scanner
+  steps:
+    - name: scan
+      image: aquasec/trivy:latest
+      script: |
+        #!/bin/sh
+        trivy fs --exit-code 1 --severity HIGH,CRITICAL $(workspaces.source.path)

@@ -1,0 +1,63 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: full-cicd-pipeline
+spec:
+  description: |
+    This pipeline clones a git repo, scans the source, builds the image,
+    scans the image, and finally deploys the application.
+  params:
+  - name: repo-url
+    type: string
+  - name: image-reference
+    type: string
+  workspaces:
+  - name: shared-data
+  - name: docker-credentials
+  tasks:
+  - name: fetch-source
+    taskRef:
+      name: git-clone
+    workspaces:
+    - name: output
+      workspace: shared-data
+    params:
+    - name: url
+      value: $(params.repo-url)
+
+  - name: trivy-scan-source
+    runAfter: ["fetch-source"]
+    taskRef:
+      name: trivy-source-scan
+    workspaces:
+    - name: source
+      workspace: shared-data
+
+  - name: build-push
+    runAfter: ["trivy-scan-source"]
+    taskRef:
+      name: kaniko
+    workspaces:
+    - name: source
+      workspace: shared-data
+    - name: dockerconfig
+      workspace: docker-credentials
+    params:
+    - name: IMAGE
+      value: $(params.image-reference)
+
+  - name: image-scan
+    runAfter: ["build-push"]
+    taskRef:
+      name: trivy-image-scan
+    params:
+    - name: IMAGE_URL
+      value: $(params.image-reference)
+
+  - name: deploy-to-cluster
+    runAfter: ["image-scan"]   
+    taskRef:
+      name: deploy-to-kubernetes     
+    workspaces:
+    - name: source
+      workspace: shared-data  

@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minimal-ingress
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - ziki.com
+    secretName: secret-tls
+  rules:
+  - host: ziki.com
+    http:
+      paths:
+      - path: /  # On utilise directement la racine
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-service # ou mon-app-service
+            port:
+              number: 80

@@ -1,0 +1,20 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: trivy-image-scan
+spec:
+  params:
+    - name: IMAGE_URL
+      description: L'URL complète de l'image Docker à scanner
+      type: string
+  steps:
+    - name: scan
+      image: aquasec/trivy:latest
+      command: ["trivy"]
+      args:
+        - "image"
+        - "--exit-code"
+        - "1"
+        - "--severity"
+        - "HIGH,CRITICAL"
+        - "$(params.IMAGE_URL)" # <-- On scanne une image, pas un workspace

@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: deploy-to-kubernetes
+spec:
+  steps:
+    - name: apply-manifests
+      image: bitnami/kubectl:latest
+      script: |
+        kubectl apply -f Deployment.yaml
+        kubectl apply -f Service.yaml
